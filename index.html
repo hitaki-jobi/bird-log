@@ -28,7 +28,6 @@ input { font-size: 16px; padding: 6px; margin: 4px; width: 90%; }
 
 <!-- 航路一覧 -->
 <div id="tripList">
-  <h2>航路一覧</h2>
 　<!-- CSVインポート -->
 　<div>
  　 <label>
@@ -53,6 +52,8 @@ input { font-size: 16px; padding: 6px; margin: 4px; width: 90%; }
   <button onclick="exportObsCSV()">観察CSV出力</button>
   <button onclick="exportBirdsCSV()">鳥リストCSV出力</button>
   <button onclick="resetAll()" style="background:#f66;color:#fff;">全データ削除（開発用）</button>
+
+  <h2>航路一覧</h2>
   <div id="trips"></div>
   <div class="fab" onclick="openTripForm()">＋</div>
 </div>
@@ -404,6 +405,7 @@ function save() {
     renderObs();
 
     openForm();
+    document.getElementById("bird").focus();
   }
 }
 

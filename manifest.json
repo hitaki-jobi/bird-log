@@ -1,0 +1,9 @@
+﻿{
+  "name": "バード記録",
+  "short_name": "バード",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": []
+}

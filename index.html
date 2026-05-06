@@ -49,10 +49,10 @@ input { font-size: 16px; padding: 6px; margin: 4px; width: 90%; }
   　</label>
 　</div>
 　<button onclick="importCSV()">CSVインポート（単体/複数可　※UTF-8）</button>
-  <button onclick="exportCSV()">CSVエクスポート</button>
-  <button onclick="resetAll()" style="background:#f66;color:#fff;">
-  全データ削除（開発用）
-</button>
+  <button onclick="exportTripsCSV()">航路CSV出力</button>
+  <button onclick="exportObsCSV()">観察CSV出力</button>
+  <button onclick="exportBirdsCSV()">鳥リストCSV出力</button>
+  <button onclick="resetAll()" style="background:#f66;color:#fff;">全データ削除（開発用）</button>
   <div id="trips"></div>
   <div class="fab" onclick="openTripForm()">＋</div>
 </div>
@@ -566,11 +566,20 @@ function saveAll() {
 }
 
 // CSVエクスポート
-// 3つセットで出力
-function exportCSV() {
+// 各ファイルごとに出力
+// iOSだと3回ダウンロードが安定しないため
+function exportTripsCSV() {
   const ts = getTimestamp();
   downloadCSV(`trips_${ts}.csv`, convertTrips());
+}
+
+function exportObsCSV() {
+  const ts = getTimestamp();
   downloadCSV(`observations_${ts}.csv`, convertObservations());
+}
+
+function exportBirdsCSV() {
+  const ts = getTimestamp();
   downloadCSV(`location_birds_${ts}.csv`, convertLocationBirds());
 }
 

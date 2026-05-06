@@ -799,9 +799,8 @@ function resetAll() {
   if (!confirm("全データ削除しますか？")) return;
 
   localStorage.removeItem("trips");
-  localStorage.removeItem("observations");
-  localStorage.removeItem("locationBirds");
-  localStorage.removeItem("recentBirds");
+  localStorage.removeItem("obs");
+  localStorage.removeItem("locBirds");
 
   alert("データを削除しました");
   location.reload();
@@ -810,8 +809,7 @@ function resetAll() {
 
 
 // 画面を開くタイミングで処理を実行。ここには一時的に打ちたいコマンドを書く
-//delete locationBirds["�ɓ��l���q�H"];
-//saveAll();
+
 // 一時コマンド置き場　終わり
 
 

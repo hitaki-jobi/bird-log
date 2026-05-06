@@ -565,14 +565,16 @@ function saveAll() {
   localStorage.setItem("locBirds", JSON.stringify(locationBirds));
 }
 
-// CSVダウンロード
+// CSVエクスポート
+// 3つセットで出力
 function exportCSV() {
-  downloadCSV("trips.csv", convertTrips());
-  downloadCSV("observations.csv", convertObservations());
-  downloadCSV("location_birds.csv", convertLocationBirds());
+  const ts = getTimestamp();
+  downloadCSV(`trips_${ts}.csv`, convertTrips());
+  downloadCSV(`observations_${ts}.csv`, convertObservations());
+  downloadCSV(`location_birds_${ts}.csv`, convertLocationBirds());
 }
 
-// ダウンロード共通
+// エクスポート共通
 function downloadCSV(filename, rows) {
   const csv = rows.map(r => r.map(escapeCSV).join(",")).join("\n");
 
@@ -596,6 +598,20 @@ function escapeCSV(value) {
     return '"' + str.replace(/"/g, '""') + '"';
   }
   return str;
+}
+
+// タイムスタンプ取得
+function getTimestamp() {
+  const d = new Date();
+
+  const yyyy = d.getFullYear();
+  const MM = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  const hh = String(d.getHours()).padStart(2, "0");
+  const mm = String(d.getMinutes()).padStart(2, "0");
+  const ss = String(d.getSeconds()).padStart(2, "0");
+
+  return `${yyyy}${MM}${dd}${hh}${mm}${ss}`;
 }
 
 function convertTrips() {

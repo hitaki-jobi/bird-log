@@ -1,6 +1,6 @@
 ﻿{
-  "name": "バード記録",
-  "short_name": "バード",
+  "name": "鳥ログ",
+  "short_name": "鳥ログ",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",

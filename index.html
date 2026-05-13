@@ -172,7 +172,7 @@ function renderTrips() {
     const main = document.createElement("span");
     main.textContent = `${t.date} ${t.location} ${t.memo||""}`;
     main.style.display = "inline-block";
-    main.style.width = "85%";
+    main.style.width = "80%";
     main.onclick = () => openTrip(t.id); // ←明細へ
 
     // 編集ボタン

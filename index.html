@@ -28,24 +28,22 @@ input { font-size: 18px; padding: 10px; margin: 4px; width: 85%; }
 
   padding: 12px;
 }
-.time {
-  text-align: center;
-}
+
 </style>
 </head>
 <body>
 
-<!-- 航路一覧 -->
+<!-- 鳥見一覧 -->
 <div id="tripList">
 
-  <h2>航路一覧</h2>
+  <h2>鳥見一覧</h2>
   <div id="trips"></div>
 
   <h2>操作</h2>
 　<!-- CSVインポート -->
 　<div>
  　 <label>
-   　 航路CSV（trips.csv）
+   　 鳥見CSV（trips.csv）
    　 <input type="file" id="importTrips" accept=".csv">
   　</label>
 　</div>
@@ -62,7 +60,7 @@ input { font-size: 18px; padding: 10px; margin: 4px; width: 85%; }
   　</label>
 　</div>
 　<button onclick="importCSV()">CSVインポート（単体/複数可　※UTF-8）</button>
-  <button onclick="exportTripsCSV()">航路CSV出力</button>
+  <button onclick="exportTripsCSV()">鳥見CSV出力</button>
   <button onclick="exportObsCSV()">観察CSV出力</button>
   <button onclick="exportBirdsCSV()">鳥リストCSV出力</button>
   <button onclick="resetAll()" style="background:#f66;color:#fff;">全データ削除（開発用）</button>
@@ -70,10 +68,10 @@ input { font-size: 18px; padding: 10px; margin: 4px; width: 85%; }
   <div class="fab" onclick="openTripForm()">＋</div>
 </div>
 
-<!-- 航路登録 -->
+<!-- 鳥見登録 -->
 <div id="tripForm" class="hidden screen">
   <button onclick="closeTripForm()">←戻る</button>
-  <h2>航路登録</h2>
+  <h2>鳥見登録</h2>
 
   日付<br>
   <input type="date" id="tripDate"><br>
@@ -84,11 +82,14 @@ input { font-size: 18px; padding: 10px; margin: 4px; width: 85%; }
   メモ<br>
   <input type="text" id="tripMemo"><br>
 
+  会った人<br>
+  <input type="text" id="tripMember"><br>
+
   <button onclick="saveTrip()">保存</button>
   <button onclick="deleteTrip()" id="deleteTripBtn" class="hidden">削除</button>
 </div>
 
-<!-- 航路詳細 -->
+<!-- 鳥見詳細 -->
 <div id="tripDetail" class="hidden">
   <button onclick="back()">←戻る</button>
   <h2 id="tripTitle"></h2>
@@ -148,9 +149,9 @@ let currentTrip = null;
 let recentBirds = [];
 let editingId = null;
 let editingTripId = null;
-let dragIndex = null;
+let keepTimeEmpty = false;
 
-// 航路一覧
+// 鳥見一覧
 function renderTrips() {
   clearFileInputs();
   const el = document.getElementById("trips");
@@ -188,7 +189,7 @@ function renderTrips() {
   });
 }
 
-// 航路登録画面
+// 鳥見登録画面
 function openTripForm() {
   editingTripId = null;
   document.getElementById("tripForm").classList.remove("hidden");
@@ -198,17 +199,19 @@ function openTripForm() {
   document.getElementById("tripDate").value = today;
   document.getElementById("tripLocation").value = "";
   document.getElementById("tripMemo").value = "";
+  document.getElementById("tripMember").value = "";
 }
 
 function closeTripForm() {
   document.getElementById("tripForm").classList.add("hidden");
 }
 
-// 航路保存
+// 鳥見保存
 function saveTrip() {
   const date = document.getElementById("tripDate").value;
   const location = document.getElementById("tripLocation").value;
   const memo = document.getElementById("tripMemo").value;
+  const member = document.getElementById("tripMember").value;
 
   if (!date || !location) return;
 
@@ -218,11 +221,12 @@ function saveTrip() {
     t.date = date;
     t.location = location;
     t.memo = memo;
+    t.member = member;
   } else {
     // 新規
     trips.push({
       id: Date.now(),
-      date, location, memo
+      date, location, memo, member
     });
   }
 
@@ -242,11 +246,12 @@ function editTrip(id) {
   document.getElementById("tripDate").value = t.date;
   document.getElementById("tripLocation").value = t.location;
   document.getElementById("tripMemo").value = t.memo || "";
+  document.getElementById("tripMember").value = t.member || "";
 }
 
 function deleteTrip() {
-  if (!confirm("削除しますか？紐づくデータごと削除されます")) return;
-  //航路を削除
+  if (!confirm("削除しますか？紐づく記録データごと削除されます")) return;
+  //鳥見を削除
   trips = trips.filter(t => t.id !== editingTripId);
   //紐づく観察記録も削除
   observations = observations.filter(o => o.tripId !== editingTripId);
@@ -256,15 +261,19 @@ function deleteTrip() {
   closeTripForm();
 }
 
-// 航路詳細
+// 鳥見詳細
 function openTrip(id) {
   currentTrip = id;
   document.getElementById("tripList").classList.add("hidden");
   document.getElementById("tripDetail").classList.remove("hidden");
 
   const trip = trips.find(t => t.id === id);
-  document.getElementById("tripTitle").textContent =
-    `${trip.date} ${trip.location} ${trip.memo||""}`;
+  document.getElementById("tripTitle").innerHTML =
+    `
+    <div>${trip.date} ${trip.location}</div>
+    <div>${trip.memo || ""}</div>
+    <div>${trip.member || ""}</div>
+    `;
 
   renderObs();
 }
@@ -305,7 +314,13 @@ function renderObs() {
   // 鳥リスト順 + それ以外は名前順
   const trip = trips.find(t => t.id === currentTrip);
   const loc = trip.location;
-  const birdOrder = locationBirds[loc] || [];
+
+  let birdOrder;
+  if (locationBirds[loc]) {
+    birdOrder = llocationBirds[loc] || [];
+  } else {
+    birdOrder = locationBirds["汎用"] || [];
+  }
 
   // ソート用関数
   const sortedKeys = Object.keys(map).sort((a, b) => {
@@ -347,9 +362,12 @@ function openForm() {
   document.getElementById("form").classList.remove("hidden");
 
   let now = new Date();
-  document.getElementById("time").value =
-    now.toTimeString().slice(0,5);
-
+  if (keepTimeEmpty) {
+    document.getElementById("time").value = "";
+  } else {
+    document.getElementById("time").value =now.toTimeString().slice(0,5);
+  }
+  
   document.getElementById("bird").value = "";
   document.getElementById("count").value = "";
   document.getElementById("memo").value = "";
@@ -405,19 +423,20 @@ function save() {
       tripId: currentTrip,
       time, bird, count, memo
     });
+    keepTimeEmpty = (time === "");
 
-  if (!recentBirds.includes(bird)) {
+    if (!recentBirds.includes(bird)) {
 
-    recentBirds.unshift(bird);
+      recentBirds.unshift(bird);
 
-    recentBirds = recentBirds.slice(0,5);
+      recentBirds = recentBirds.slice(0,5);
   }
 
-    saveAll();
-    renderObs();
+      saveAll();
+      renderObs();
 
-    openForm();
-    document.getElementById("bird").focus();
+      openForm();
+      document.getElementById("bird").focus();
   }
 }
 
@@ -440,7 +459,12 @@ function renderBirdList(filter="") {
   const trip = trips.find(t => t.id === currentTrip);
   const loc = trip.location;
 
-  const base = locationBirds[loc] || [];
+  let base;
+  if (locationBirds[loc]) {
+    base = locationBirds[loc] || [];
+  } else {
+    base = locationBirds["汎用"] || [];
+  }
 
   let birds = [];
 
@@ -638,9 +662,9 @@ function getTimestamp() {
 }
 
 function convertTrips() {
-  const rows = [["id","date","location","memo"]];
+  const rows = [["id","date","location","memo","member"]];
   trips.forEach(t => {
-    rows.push([t.id, t.date, t.location, t.memo || ""]);
+    rows.push([t.id, t.date, t.location, t.memo || "", t.member || ""]);
   });
   return rows;
 }
@@ -666,8 +690,8 @@ function convertLocationBirds() {
 
 // CSVインポート
 // インポート仕様　各CSVそれぞれ単体でもまとめてでも取り込み可能
-// trips.csv  航路IDを新規採番して追加
-// observations.csv  同時に読み込ませたtrips.csvと航路IDをそろえる。既存の航路IDがあればそのまま追加。なければ取り込まずスキップ。
+// trips.csv  鳥見IDを新規採番して追加
+// observations.csv  同時に読み込ませたtrips.csvと鳥見IDをそろえる。既存の鳥見IDがあればそのまま追加。なければ取り込まずスキップ。
 // location_birds.csv  他２つと独立し、単体でそのまま追加
 async function importCSV() {
   const tripFile = document.getElementById("importTrips").files[0];
@@ -697,7 +721,8 @@ async function importCSV() {
         id: newId,
         date: r[1],
         location: r[2],
-        memo: r[3] || ""
+        memo: r[3]  || "",
+        member: r[4] || ""
       });
     });
   }
@@ -742,7 +767,6 @@ async function importCSV() {
     birdRows.slice(1).forEach(r => {
       const loc = r[0];
       const bird = r[1];
-console.log("loc:", loc, loc.length);
 
 //      let loc = (r[0] || "").replace(/^\uFEFF/, "").trim();
 

@@ -308,8 +308,21 @@ function renderObs() {
 
   let map = {};
   obs.forEach(o=>{
-    map[o.bird] = (map[o.bird]||0) + Number(o.count||0);
+//    map[o.bird] = (map[o.bird]||0) + Number(o.count||0);
+
+  const bird = String(o.bird || "").trim();
+
+
+  if (!bird) return;
+
+
+  map[bird] = (map[bird] || 0) + Number(o.count || 0);
+
+
   });
+
+console.log(obs);
+console.log(map);
 
   // 鳥リスト順 + それ以外は名前順
   const trip = trips.find(t => t.id === currentTrip);

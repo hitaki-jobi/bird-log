@@ -225,7 +225,7 @@ function saveTrip() {
   } else {
     // 新規
     trips.push({
-      id: Date.now(),
+      id: Date.now() + Math.random(),
       date, location, memo, member
     });
   }
@@ -428,7 +428,7 @@ function save() {
   } else {
     // 新規
     observations.push({
-      id: Date.now(),
+      id: Date.now() + Math.random(),
       tripId: currentTrip,
       time, bird, count, memo
     });
@@ -722,7 +722,7 @@ async function importCSV() {
 
     tripRows.slice(1).forEach(r => {
       const oldId = r[0];
-      const newId = Date.now();
+      const newId = Date.now() + Math.random();
 
       idMap[oldId] = newId;
 
@@ -758,7 +758,7 @@ async function importCSV() {
       if (!newTripId) return; // どこにも紐づかないデータは捨てる
 
       observations.push({
-        id: Date.now(),
+        id: Date.now() + Math.random(),
         tripId: newTripId,
         time: r[2],
         bird: r[3],

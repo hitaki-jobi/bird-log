@@ -863,5 +863,12 @@ function resetAll() {
 renderTrips();
 </script>
 
+
+<script>
+// 完全オフライン対応
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./service-worker.js");
+}
+</script>
 </body>
 </html>

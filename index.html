@@ -308,17 +308,13 @@ function renderObs() {
 
   let map = {};
   obs.forEach(o=>{
-//    map[o.bird] = (map[o.bird]||0) + Number(o.count||0);
-
-  const bird = String(o.bird || "").trim();
+    const bird = String(o.bird || "").trim();
 
 
-  if (!bird) return;
+    if (!bird) return;
 
 
-  map[bird] = (map[bird] || 0) + Number(o.count || 0);
-
-
+    map[bird] = (map[bird] || 0) + Number(o.count || 0);
   });
 
 console.log(obs);
@@ -726,7 +722,7 @@ async function importCSV() {
 
     tripRows.slice(1).forEach(r => {
       const oldId = r[0];
-      const newId = Date.now() + Math.random();
+      const newId = Date.now();
 
       idMap[oldId] = newId;
 
@@ -762,7 +758,7 @@ async function importCSV() {
       if (!newTripId) return; // どこにも紐づかないデータは捨てる
 
       observations.push({
-        id: Date.now() + Math.random(),
+        id: Date.now(),
         tripId: newTripId,
         time: r[2],
         bird: r[3],

@@ -1,11 +1,9 @@
-﻿const CACHE_NAME = "birdlog-v2";
+﻿const CACHE_NAME = "birdlog-v4";
 
 const urlsToCache = [
   "./",
   "./index.html",
-  "./manifest.json",
-  "./icon-192.png",
-  "./icon-512.png"
+  "./manifest.json"
 ];
 
 // インストール時にキャッシュ

@@ -2,7 +2,7 @@
   "name": "鳥ログ",
   "short_name": "鳥ログ",
   "start_url": "./index.html",
-  "display": "standalone",
+  "display": "minimal-ui",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
   "icons": []

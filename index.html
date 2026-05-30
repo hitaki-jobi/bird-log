@@ -506,6 +506,13 @@ function renderBirdList(filter="") {
       //クリック選択したら候補リストを消して次の欄に自動フォーカス
       document.getElementById("birdList").innerHTML = "";
       document.getElementById("count").focus();
+
+const count = document.getElementById("count");
+
+setTimeout(() => {
+  count.focus();
+}, 50);
+
     };
     el.appendChild(div);
   });

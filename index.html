@@ -496,7 +496,7 @@ function renderBirdList(filter="") {
 
   const hiraFilter = normalizeKana(filter);	
 
-  birds.filter(b => normalizeKana(b).includes(filter)).forEach(b=>{
+  birds.filter(b => normalizeKana(b).includes(hiraFilter)).forEach(b=>{
     const div = document.createElement("div");
     div.className = "list-item";
     div.textContent = b;
@@ -511,6 +511,7 @@ const count = document.getElementById("count");
 
 setTimeout(() => {
   count.focus();
+  count.click();
 }, 50);
 
     };

@@ -1,4 +1,4 @@
-﻿const CACHE_NAME = "birdlog-v9";
+﻿const CACHE_NAME = "birdlog-v10";
 
 const urlsToCache = [
   "./",

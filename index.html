@@ -321,9 +321,6 @@ function renderObs() {
     map[bird] = (map[bird] || 0) + Number(o.count || 0);
   });
 
-console.log(obs);
-console.log(map);
-
   // 鳥リスト順 + それ以外は名前順
   const trip = trips.find(t => t.id === currentTrip);
   const loc = trip.location;
@@ -364,6 +361,14 @@ console.log(map);
     div.textContent = `${k} ${map[k]}`;
     sum.appendChild(div);
   });
+
+  // 種数も追加表示
+
+  const speciesDiv = document.createElement("div");
+
+  speciesDiv.textContent = `種数 ${sortedKeys.length}`;
+
+  sum.appendChild(speciesDiv);
 }
 
 // 入力画面
@@ -489,9 +494,9 @@ function renderBirdList(filter="") {
     birds = [...new Set([...recentBirds, ...base])];
   }
 
-  const hiraFilter = toHiragana(filter);	
+  const hiraFilter = normalizeKana(filter);	
 
-  birds.filter(b => toHiragana(b).includes(filter)).forEach(b=>{
+  birds.filter(b => normalizeKana(b).includes(filter)).forEach(b=>{
     const div = document.createElement("div");
     div.className = "list-item";
     div.textContent = b;
@@ -511,10 +516,28 @@ function filterBirds() {
   renderBirdList(v);
 }
 
-function toHiragana(str) {
-  return (str || "").replace(/[\u30A1-\u30F6]/g, ch =>
-    String.fromCharCode(ch.charCodeAt(0) - 0x60)
-  );
+function normalizeKana(str) {
+  return (str || "")
+    // カタカナ→ひらがな
+    .replace(/[\u30A1-\u30F6]/g, ch =>
+      String.fromCharCode(ch.charCodeAt(0) - 0x60)
+    )
+
+    // 濁点・半濁点を除去
+    .normalize("NFD")
+    .replace(/[\u3099\u309A]/g, "")
+
+    // 小文字→大文字
+    .replace(/ぁ/g, "あ")
+    .replace(/ぃ/g, "い")
+    .replace(/ぅ/g, "う")
+    .replace(/ぇ/g, "え")
+    .replace(/ぉ/g, "お")
+    .replace(/ゃ/g, "や")
+    .replace(/ゅ/g, "ゆ")
+    .replace(/ょ/g, "よ")
+    .replace(/っ/g, "つ")
+    .replace(/ゎ/g, "わ");
 }
 
 // 鳥リスト編集
